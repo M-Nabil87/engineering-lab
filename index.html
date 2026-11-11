@@ -1,0 +1,230 @@
+<!doctype html>
+<!-- مختبر الهندسة: account deletion without the app (Google Play deletion link). -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حذف الحساب - مختبر الهندسة</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --green: #5f7363;
+    --green-light: #8c9c8f;
+    --bg: #f4f6f4;
+    --card: #ffffff;
+    --text: #1f2a22;
+    --muted: #5b665e;
+    --red: #b3261e;
+    --border: #d5ddd6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+    line-height: 1.7;
+  }
+  header {
+    background: var(--green-light);
+    color: #fff;
+    padding: 20px 16px;
+    text-align: center;
+  }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header p { margin: 4px 0 0; opacity: .9; }
+  main { max-width: 560px; margin: 0 auto; padding: 16px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  h2 { font-size: 1.1rem; margin: 0 0 8px; }
+  ul { margin: 0; padding-inline-start: 20px; }
+  label { display: block; font-weight: 600; margin: 12px 0 4px; }
+  input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  input[type=email], input[type=password] { direction: ltr; text-align: left; }
+  button {
+    margin-top: 16px;
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: var(--green);
+    cursor: pointer;
+  }
+  button.danger { background: var(--red); }
+  button.plain { background: transparent; color: var(--green); }
+  button:disabled { opacity: .5; cursor: default; }
+  .error { color: var(--red); margin-top: 12px; }
+  .muted { color: var(--muted); font-size: .92rem; }
+  .ltr { direction: ltr; unicode-bidi: embed; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>مختبر الهندسة</h1>
+  <p>حذف الحساب</p>
+</header>
+<main>
+  <section class="card">
+    <h2>ماذا يحدث عند حذف الحساب</h2>
+    <ul>
+      <li>يُقفل حسابك فورًا ولا يمكن تسجيل الدخول به.</li>
+      <li>يتوقف اشتراك اللوج، وتُلغى الحجوزات غير المدفوعة والإيصالات التي تنتظر المراجعة، وتُغلق أسئلتك.</li>
+      <li>الحجوزات المدفوعة لا تُسترد تلقائيًا؛ تواصل مع الدعم قبل الحذف إن أردت استردادًا.</li>
+      <li>بعد 30 يومًا تُحذف بياناتك نهائيًا: الملف الشخصي، والشركة والمشاريع، واللوج، والحجوزات، والأسئلة وصورها، وصور الإيصالات.</li>
+      <li>تبقى سجلات المدفوعات بالمبلغ والتاريخ والدورة أو الخطة فقط، بدون اسم أو بريد أو هاتف أو صورة إيصال.</li>
+      <li>خلال الـ 30 يومًا يمكن استعادة الحساب بالتواصل مع الدعم على واتساب <span class="ltr">00201010960419</span>.</li>
+      <li>التقارير المحفوظة على جهازك فقط تبقى على الجهاز.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="sign-in">
+    <h2>سجّل الدخول بحسابك</h2>
+    <p class="muted">للتأكد أنك صاحب الحساب. لا تُحفظ بياناتك في هذه الصفحة.</p>
+    <form id="sign-in-form" novalidate>
+      <label for="email">البريد الإلكتروني</label>
+      <input id="email" type="email" autocomplete="email" required>
+      <label for="password">كلمة المرور</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button id="sign-in-button" type="submit">تسجيل الدخول</button>
+    </form>
+    <p class="muted">نسيت كلمة المرور؟ غيّرها من صفحة «حسابي» في التطبيق، أو تواصل مع الدعم على واتساب <span class="ltr">00201010960419</span>.</p>
+    <p class="error" id="sign-in-error" role="alert" hidden></p>
+  </section>
+
+  <section class="card" id="confirm" hidden>
+    <h2>تأكيد الحذف</h2>
+    <p>الحساب: <strong class="ltr" id="signed-in-email"></strong></p>
+    <label for="word">للتأكيد اكتب كلمة «حذف»</label>
+    <input id="word" type="text" autocomplete="off">
+    <button id="delete-button" class="danger" type="button" disabled>حذف حسابي</button>
+    <button id="cancel-button" class="plain" type="button">رجوع</button>
+    <p class="error" id="delete-error" role="alert" hidden></p>
+  </section>
+
+  <section class="card" id="done" hidden>
+    <h2>تم حذف حسابك</h2>
+    <p>لا يمكن تسجيل الدخول به بعد الآن، وتُحذف بياناته نهائيًا بعد 30 يومًا. لاستعادته خلال هذه المدة تواصل مع الدعم على واتساب <span class="ltr">00201010960419</span>.</p>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(() => {
+  const url = 'https://sdfocunkijvhslmuzfan.supabase.co';
+  const key = 'sb_publishable_G1TgT2FT-6t8SCxuxhqn3Q_ymJlG3J8';
+  const $ = (id) => document.getElementById(id);
+  const show = (el, text) => { el.textContent = text; el.hidden = false; };
+
+  if (url.startsWith('__') || !window.supabase) {
+    show($('sign-in-error'), 'الصفحة غير مكتملة الإعداد. تواصل مع الدعم.');
+    $('sign-in-button').disabled = true;
+    return;
+  }
+  // The session stays in memory only, so nothing is left in the browser.
+  const db = window.supabase.createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+
+  function signInMessage(error) {
+    const code = error.code || '';
+    const text = (error.message || '').toLowerCase();
+    if (code === 'user_banned' || text.includes('banned')) {
+      return 'هذا الحساب محذوف بالفعل. لاستعادته خلال 30 يومًا من الحذف تواصل مع الدعم على واتساب 00201010960419';
+    }
+    if (code === 'invalid_credentials' || text.includes('invalid login')) {
+      return 'البريد أو كلمة المرور غير صحيحة.';
+    }
+    if (code === 'email_not_confirmed' || text.includes('not confirmed')) {
+      return 'هذا الحساب لم يتم تأكيده بعد، فلا توجد له بيانات مؤكدة. يمكنك تجاهله أو التواصل مع الدعم.';
+    }
+    if (error.status === 429 || code.includes('rate')) {
+      return 'محاولات كثيرة في وقت قصير. انتظر قليلًا ثم حاول مرة أخرى.';
+    }
+    if (text.includes('fetch') || text.includes('network')) {
+      return 'لا يوجد اتصال بالإنترنت. تأكد من الاتصال وحاول مرة أخرى.';
+    }
+    return 'حدث خطأ. حاول مرة أخرى.';
+  }
+
+  $('sign-in-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = $('email').value.trim();
+    const password = $('password').value;
+    $('sign-in-error').hidden = true;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || !password) {
+      show($('sign-in-error'), 'أدخل البريد الإلكتروني وكلمة المرور.');
+      return;
+    }
+    $('sign-in-button').disabled = true;
+    try {
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      if (error) {
+        show($('sign-in-error'), signInMessage(error));
+        return;
+      }
+      $('password').value = '';
+      $('signed-in-email').textContent = data.user.email;
+      $('sign-in').hidden = true;
+      $('confirm').hidden = false;
+      $('word').focus();
+    } catch (e) {
+      show($('sign-in-error'), signInMessage(e));
+    } finally {
+      $('sign-in-button').disabled = false;
+    }
+  });
+
+  $('word').addEventListener('input', () => {
+    $('delete-button').disabled = $('word').value.trim() !== 'حذف';
+  });
+
+  $('cancel-button').addEventListener('click', async () => {
+    await db.auth.signOut().catch(() => {});
+    $('word').value = '';
+    $('delete-button').disabled = true;
+    $('delete-error').hidden = true;
+    $('confirm').hidden = true;
+    $('sign-in').hidden = false;
+  });
+
+  $('delete-button').addEventListener('click', async () => {
+    $('delete-button').disabled = true;
+    $('delete-error').hidden = true;
+    try {
+      const { error } = await db.rpc('delete_my_account');
+      if (error) {
+        const lastAdmin = (error.message || '').includes('LAST_ADMIN');
+        show($('delete-error'), lastAdmin
+          ? 'أنت الأدمن الوحيد. أضف أدمن آخر من لوحة الأدمن في التطبيق قبل حذف حسابك.'
+          : 'تعذر حذف الحساب. حاول مرة أخرى أو تواصل مع الدعم.');
+        $('delete-button').disabled = false;
+        return;
+      }
+      // The server already ended every session; this only clears memory.
+      await db.auth.signOut({ scope: 'local' }).catch(() => {});
+      $('confirm').hidden = true;
+      $('done').hidden = false;
+    } catch (e) {
+      show($('delete-error'), 'لا يوجد اتصال بالإنترنت. تأكد من الاتصال وحاول مرة أخرى.');
+      $('delete-button').disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
